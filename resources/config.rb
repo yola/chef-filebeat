@@ -2,10 +2,13 @@
 # Cookbook:: filebeat
 # Resource:: filebeat_config
 #
+require 'yaml'
 
 default_config = { 'filebeat.inputs' => [], 'filebeat.prospectors' => [], 'filebeat.modules' => [], 'prospectors' => [] }
 
 resource_name :filebeat_config
+provides :filebeat_config
+
 
 property :service_name, String, default: 'filebeat'
 property :filebeat_install_resource_name, String, default: 'default'
@@ -46,10 +49,10 @@ action :create do
   end
 
   # Filebeat and psych v1.x don't get along.
-  if Psych::VERSION.start_with?('1')
-    defaultengine = YAML::ENGINE.yamler
-    YAML::ENGINE.yamler = 'syck'
-  end
+  # if Psych::VERSION.start_with?('1')
+   # defaultengine = YAML::ENGINE.yamler
+   # YAML::ENGINE.yamler = 'syck'
+  # end
 
   file new_resource.conf_file do
     content JSON.parse(config.to_json).to_yaml.lines.to_a[1..-1].join
@@ -59,7 +62,7 @@ action :create do
   end
 
   # ...and put this back the way we found them.
-  YAML::ENGINE.yamler = defaultengine if Psych::VERSION.start_with?('1')
+  # YAML::ENGINE.yamler = defaultengine if Psych::VERSION.start_with?('1')
 end
 
 action :delete do

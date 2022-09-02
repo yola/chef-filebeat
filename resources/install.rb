@@ -4,6 +4,7 @@
 #
 
 resource_name :filebeat_install
+provides :filebeat_install
 
 property :version, String, default: '7.6.2'
 property :release, String, default: '1'

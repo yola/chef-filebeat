@@ -4,6 +4,7 @@
 #
 
 resource_name :filebeat_runit_service
+provides :filebeat_runit_service
 
 property :service_name, String, default: 'filebeat'
 property :filebeat_install_resource_name, String, default: 'default'

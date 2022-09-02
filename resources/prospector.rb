@@ -2,8 +2,11 @@
 # Cookbook:: filebeat
 # Resource:: filebeat_prospector
 #
+require 'yaml'
 
 resource_name :filebeat_prospector
+provides :filebeat_prospector
+
 
 property :service_name, String, default: 'filebeat'
 property :filebeat_install_resource_name, String, default: 'default'
@@ -27,10 +30,10 @@ action :create do
   config = [config] unless new_resource.config.is_a?(Array)
 
   # Filebeat and psych v1.x don't get along.
-  if Psych::VERSION.start_with?('1')
-    defaultengine = YAML::ENGINE.yamler
-    YAML::ENGINE.yamler = 'syck'
-  end
+  # if Psych::VERSION.start_with?('1')
+  #  defaultengine = YAML::ENGINE.yamler
+  #  YAML::ENGINE.yamler = 'syck'
+  # end
 
   # file_content = { 'filebeat' => { 'prospectors' => config } }.to_yaml
   file_content =
@@ -41,7 +44,7 @@ action :create do
     end
 
   # ...and put this back the way we found them.
-  YAML::ENGINE.yamler = defaultengine if Psych::VERSION.start_with?('1')
+  # YAML::ENGINE.yamler = defaultengine if Psych::VERSION.start_with?('1')
 
   prospector_file_name = "#{new_resource.prefix}#{new_resource.name}.yml"
 
